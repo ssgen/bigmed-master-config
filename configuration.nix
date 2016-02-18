@@ -65,16 +65,38 @@
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
+    curl
     firefox
     gitAndTools.gitFull
+    ( pkgs.lib.overrideDerivation pkgs.hadoop (attrs: {
+	name = "hadoop-2.7.2";
+	src = fetchurl {
+	  url = "mirror://apache/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz";
+	  sha256 = "1xq3idqrmap7vamhl3vjc8yycaj4v6qy7faffjga6zyjhl7p9ba9";
+	};
+      })
+    )
     kde4.krusader
+    openjdk7
+    rsync
     wget
   ];
 
+  nixpkgs.config = {
+    allowUnfree = true;
+
+    firefox = {
+      enableGoogleTalkPlugin = true;
+      enableAdobeFlash = true;
+    };
+    
+    icedtea = true;
+  };
+  
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
